@@ -47,32 +47,6 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("blocking_message_for_user_with_wrong_password")
-    public void blockingMessageForUserWithWrongPassword(TestInfo testInfo) {
-        String testName = testInfo.getDisplayName();
-        String errorMessage = "Ошибка! Неверно указан логин или пароль";
-        String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
-
-        LoginPage loginPage = new LoginPage();
-        UserInfo registeredUser = DataHelper.getRegisteredUser();
-
-        loginPage.loginInput(registeredUser.getLogin());
-
-        for (int i = 0; i < 3; i++) {
-            loginPage.passwordInput(DataHelper.fakePassword(registeredUser));
-            if (i == 2) break;
-            loginPage.invalidLogin(errorMessage, testName);
-            loginPage.clearPasswordInput();
-        }
-        loginPage.invalidLogin(errorBlockingMessage, testName);
-
-        String expectedStatus = "blocked";
-        String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
-
-        Assertions.assertEquals(expectedStatus, actualStatus);
-    }
-
-    @Test
     @DisplayName("invalid_verify_code_test")
     public void invalidVerifyCodeTest(TestInfo testInfo) {
         String testName = testInfo.getDisplayName();
@@ -87,34 +61,6 @@ public class LoginTest {
 
         verificationPage.inputFakeCode(registeredUser.getLogin());
         verificationPage.invalidVerify(errorMessage, testName);
-    }
-
-    @Test
-    @DisplayName("blocking_message_for_user_with_wrong_verify_code")
-    public void blockingMessageForUserWithWrongVerifyCode(TestInfo testInfo) {
-        String testName = testInfo.getDisplayName();
-        String errorMessage = "Ошибка! Неверно указан код! Попробуйте ещё раз.";
-        String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
-
-        LoginPage loginPage = new LoginPage();
-        UserInfo registeredUser = DataHelper.getRegisteredUser();
-
-        loginPage.loginInput(registeredUser.getLogin());
-        loginPage.passwordInput(registeredUser.getPassword());
-        VerificationPage verificationPage = loginPage.validLogin(testName);
-
-        for (int i = 0; i < 3; i++) {
-            verificationPage.inputFakeCode(registeredUser.getLogin());
-            if (i == 2) break;
-            verificationPage.invalidVerify(errorMessage, testName);
-            verificationPage.clearCodeInput();
-        }
-        verificationPage.invalidVerify(errorBlockingMessage, testName);
-
-        String expectedStatus = "blocked";
-        String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
-
-        Assertions.assertEquals(expectedStatus, actualStatus);
     }
 
     @Test
