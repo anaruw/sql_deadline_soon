@@ -47,8 +47,8 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("blocking_user_with_wrong_password")
-    public void blockingUserWithWrongPassword(TestInfo testInfo) {
+    @DisplayName("blocking_message_for_user_with_wrong_password")
+    public void blockingMessageForUserWithWrongPassword(TestInfo testInfo) {
         String testName = testInfo.getDisplayName();
         String errorMessage = "Ошибка! Неверно указан логин или пароль";
         String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
@@ -90,8 +90,8 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("blocking_user_with_wrong_verify_code")
-    public void blockingUserWithWrongVerifyCode(TestInfo testInfo) {
+    @DisplayName("blocking_message_for_user_with_wrong_verify_code")
+    public void blockingMessageForUserWithWrongVerifyCode(TestInfo testInfo) {
         String testName = testInfo.getDisplayName();
         String errorMessage = "Ошибка! Неверно указан код! Попробуйте ещё раз.";
         String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
@@ -115,5 +115,59 @@ public class LoginTest {
         String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
 
         Assertions.assertEquals(expectedStatus, actualStatus);
+    }
+
+    @Test
+    @DisplayName("user_should_be_blocked_with_wrong_password")
+    public void userShouldBeBlockedWithWrongPassword(TestInfo testInfo) {
+        String testName = testInfo.getDisplayName();
+        String errorMessage = "Ошибка! Неверно указан логин или пароль";
+        String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
+
+        LoginPage loginPage = new LoginPage();
+        UserInfo registeredUser = DataHelper.getRegisteredUser();
+
+        loginPage.loginInput(registeredUser.getLogin());
+
+        for (int i = 0; i < 3; i++) {
+            loginPage.passwordInput(DataHelper.fakePassword(registeredUser));
+            loginPage.invalidLogin(errorMessage, testName);
+            loginPage.clearPasswordInput();
+        }
+        String expectedStatus = "blocked";
+        String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
+
+        Assertions.assertEquals(expectedStatus, actualStatus);
+
+        loginPage.passwordInput(registeredUser.getPassword());
+        loginPage.invalidLogin(errorBlockingMessage, testName);
+    }
+
+    @Test
+    @DisplayName("user_should_be_blocked_with_wrong_verify_code")
+    public void userShouldBeBlockedWithWrongVerifyCode(TestInfo testInfo) {
+        String testName = testInfo.getDisplayName();
+        String errorMessage = "Ошибка! Неверно указан код! Попробуйте ещё раз.";
+        String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
+
+        LoginPage loginPage = new LoginPage();
+        UserInfo registeredUser = DataHelper.getRegisteredUser();
+
+        loginPage.loginInput(registeredUser.getLogin());
+        loginPage.passwordInput(registeredUser.getPassword());
+        VerificationPage verificationPage = loginPage.validLogin(testName);
+
+        for (int i = 0; i < 3; i++) {
+            verificationPage.inputFakeCode(registeredUser.getLogin());
+            if (i == 2) break;
+            verificationPage.invalidVerify(errorMessage, testName);
+            verificationPage.clearCodeInput();
+        }
+        String expectedStatus = "blocked";
+        String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
+
+        Assertions.assertEquals(expectedStatus, actualStatus);
+
+        verificationPage.invalidVerify(errorBlockingMessage, testName);
     }
 }
