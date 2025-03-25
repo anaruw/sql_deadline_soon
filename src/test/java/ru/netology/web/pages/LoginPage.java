@@ -46,7 +46,7 @@ public class LoginPage {
         shouldBeErrorNotification(errorMessage, testName);
     }
 
-    public void clearInput() {
-        passwordInputField.press(Keys.chord(Keys.HOME, Keys.SHIFT)).press(Keys.BACK_SPACE);
+    public void clearPasswordInput() {
+        passwordInputField.press(Keys.HOME, Keys.chord(Keys.SHIFT, Keys.END), Keys.BACK_SPACE);
     }
 }

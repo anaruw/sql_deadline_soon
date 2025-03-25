@@ -9,8 +9,6 @@ import ru.netology.web.pages.VerificationPage;
 import ru.netology.web.util.DataHelper;
 import ru.netology.web.util.SqlHelper;
 
-import java.sql.Timestamp;
-
 public class LoginTest {
     @BeforeEach
     public void setUp() {
@@ -64,7 +62,7 @@ public class LoginTest {
             loginPage.passwordInput(DataHelper.fakePassword(registeredUser));
             if (i == 2) break;
             loginPage.invalidLogin(errorMessage, testName);
-            loginPage.clearInput();
+            loginPage.clearPasswordInput();
         }
         loginPage.invalidLogin(errorBlockingMessage, testName);
 
@@ -109,7 +107,7 @@ public class LoginTest {
             verificationPage.inputFakeCode(registeredUser.getLogin());
             if (i == 2) break;
             verificationPage.invalidVerify(errorMessage, testName);
-            verificationPage.clearInput();
+            verificationPage.clearCodeInput();
         }
         verificationPage.invalidVerify(errorBlockingMessage, testName);
 

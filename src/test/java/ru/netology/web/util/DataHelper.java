@@ -4,7 +4,6 @@ import com.github.javafaker.Faker;
 import lombok.experimental.UtilityClass;
 import ru.netology.web.data.UserInfo;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -52,12 +51,6 @@ public class DataHelper {
             if (!result.equals(registeredUser.getPassword())) break;
         }
         return result;
-    }
-
-    public Timestamp initTime() {
-        long time = System.currentTimeMillis();
-        long difference = 3 * 60 * 60 * 1000;
-        return new Timestamp(time - difference);
     }
 
     public String fakeVerifyCode(String verifyCode) {

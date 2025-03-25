@@ -7,7 +7,6 @@ import org.openqa.selenium.Keys;
 import ru.netology.web.util.DataHelper;
 import ru.netology.web.util.SqlHelper;
 
-import java.sql.Timestamp;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -53,7 +52,7 @@ public class VerificationPage {
         errorNotification.shouldHave(Condition.exactText(errorMessage));
     }
 
-    public void clearInput() {
-        codeInputField.press(Keys.chord(Keys.HOME, Keys.SHIFT)).press(Keys.BACK_SPACE);
+    public void clearCodeInput() {
+        codeInputField.press(Keys.HOME, Keys.chord(Keys.SHIFT, Keys.END), Keys.BACK_SPACE);
     }
 }

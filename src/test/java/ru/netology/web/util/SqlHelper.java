@@ -3,12 +3,10 @@ package ru.netology.web.util;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Timestamp;
 
 @UtilityClass
 public class SqlHelper {
