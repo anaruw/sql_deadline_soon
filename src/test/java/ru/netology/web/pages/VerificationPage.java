@@ -3,9 +3,6 @@ package ru.netology.web.pages;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.Keys;
-import ru.netology.web.util.DataHelper;
-import ru.netology.web.util.SqlHelper;
 
 import java.time.Duration;
 
@@ -30,29 +27,12 @@ public class VerificationPage {
         Selenide.screenshot(testName + "_after_click");
     }
 
-    public void inputValidCode(String login) {
-        codeInputField.setValue(SqlHelper.getVerifyCode(login));
-    }
-
-    public void inputFakeCode(String login) {
-        String verifyCode = SqlHelper.getVerifyCode(login);
-        codeInputField.setValue(DataHelper.fakeVerifyCode(verifyCode));
+    public void inputValidCode(String code) {
+        codeInputField.setValue(code);
     }
 
     public DashBoardPage validVerify(String testName) {
         nextButtonClick(testName);
         return new DashBoardPage();
-    }
-
-    public void invalidVerify(String errorMessage, String testName) {
-        nextButtonClick(testName);
-
-        errorNotification.shouldBe(Condition.visible, Duration.ofSeconds(10));
-        Selenide.screenshot(testName + "_notification");
-        errorNotification.shouldHave(Condition.exactText(errorMessage));
-    }
-
-    public void clearCodeInput() {
-        codeInputField.press(Keys.HOME, Keys.chord(Keys.SHIFT, Keys.END), Keys.BACK_SPACE);
     }
 }

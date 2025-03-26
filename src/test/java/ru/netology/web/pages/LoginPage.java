@@ -24,13 +24,13 @@ public class LoginPage {
         passwordInputField.setValue(password);
     }
 
-    private void nextButtonClick(String testName) {
+    public void nextButtonClick(String testName) {
         Selenide.screenshot(testName + "_before_click");
         nextButton.click();
         Selenide.screenshot(testName + "_after_click");
     }
 
-    private void shouldBeErrorNotification(String errorMessage, String testName) {
+    public void shouldBeErrorNotification(String errorMessage, String testName) {
         errorNotification.shouldBe(Condition.visible, Duration.ofSeconds(10));
         Selenide.screenshot(testName + "_notification");
         errorNotification.shouldHave(Condition.exactText(errorMessage));
@@ -39,11 +39,6 @@ public class LoginPage {
     public VerificationPage validLogin(String testName) {
         nextButtonClick(testName);
         return new VerificationPage();
-    }
-
-    public void invalidLogin(String errorMessage, String testName) {
-        nextButtonClick(testName);
-        shouldBeErrorNotification(errorMessage, testName);
     }
 
     public void clearPasswordInput() {

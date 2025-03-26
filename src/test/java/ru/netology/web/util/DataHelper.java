@@ -33,32 +33,12 @@ public class DataHelper {
         );
     }
 
-    public String fakeLogin(UserInfo registeredUser) {
-        String result = registeredUser.getLogin();
-
-        for (int i = 0; i < 3; i++) {
-            result = faker.name().username();
-            if (!result.equals(registeredUser.getLogin())) break;
-        }
-        return result;
-    }
-
     public String fakePassword(UserInfo registeredUser) {
         String result = registeredUser.getPassword();
 
         for (int i = 0; i < 3; i++) {
             result = faker.internet().password();
             if (!result.equals(registeredUser.getPassword())) break;
-        }
-        return result;
-    }
-
-    public String fakeVerifyCode(String verifyCode) {
-        String result = verifyCode;
-
-        for (int i = 0; i < 3; i++) {
-            result = faker.numerify("######");
-            if (!result.equals(verifyCode)) break;
         }
         return result;
     }

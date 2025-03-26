@@ -48,4 +48,23 @@ public class SqlHelper {
         }
         return result;
     }
+
+    @SneakyThrows
+    public void cleaningDB() {
+
+        try (Connection conn = DriverManager.getConnection(connUrl, connUser, connPass)){
+            QueryRunner runner = new QueryRunner();
+            String[] tableNames = {"card_transactions", "cards", "auth_codes", "users"};
+            String foreignKeySet = "SET FOREIGN_KEY_CHECKS = 0;";
+
+            runner.update(conn, foreignKeySet);
+
+            for (int i = 0; i < 4; i++) {
+                String removeQuery = "TRUNCATE table " + tableNames[i] + ";";
+                runner.update(conn, removeQuery);
+            }
+            foreignKeySet = "SET FOREIGN_KEY_CHECKS = 1;";
+            runner.update(conn, foreignKeySet);
+        }
+    }
 }

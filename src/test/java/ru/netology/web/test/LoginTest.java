@@ -1,4 +1,4 @@
-package ru.netology.web.service;
+package ru.netology.web.test;
 
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.*;
@@ -15,6 +15,11 @@ public class LoginTest {
         Selenide.open("http://localhost:9999");
     }
 
+    @AfterAll
+    public static void endTest() {
+        SqlHelper.cleaningDB();
+    }
+
     @Test
     @DisplayName("valid_login_test")
     public void validLoginTest(TestInfo testInfo) {
@@ -27,7 +32,7 @@ public class LoginTest {
         loginPage.passwordInput(registeredUser.getPassword());
         VerificationPage verificationPage = loginPage.validLogin(testName);
 
-        verificationPage.inputValidCode(registeredUser.getLogin());
+        verificationPage.inputValidCode(SqlHelper.getVerifyCode(registeredUser.getLogin()));
         DashBoardPage dashBoardPage = verificationPage.validVerify(testName);
     }
 
@@ -40,27 +45,11 @@ public class LoginTest {
         LoginPage loginPage = new LoginPage();
         UserInfo registeredUser = DataHelper.getRegisteredUser();
 
-        loginPage.loginInput(DataHelper.fakeLogin(registeredUser));
-        loginPage.passwordInput(registeredUser.getPassword());
-
-        loginPage.invalidLogin(errorMessage, testName);
-    }
-
-    @Test
-    @DisplayName("invalid_verify_code_test")
-    public void invalidVerifyCodeTest(TestInfo testInfo) {
-        String testName = testInfo.getDisplayName();
-        String errorMessage = "Ошибка! Неверно указан код! Попробуйте ещё раз.";
-
-        LoginPage loginPage = new LoginPage();
-        UserInfo registeredUser = DataHelper.getRegisteredUser();
-
         loginPage.loginInput(registeredUser.getLogin());
-        loginPage.passwordInput(registeredUser.getPassword());
-        VerificationPage verificationPage = loginPage.validLogin(testName);
+        loginPage.passwordInput(DataHelper.fakePassword(registeredUser));
 
-        verificationPage.inputFakeCode(registeredUser.getLogin());
-        verificationPage.invalidVerify(errorMessage, testName);
+        loginPage.nextButtonClick(testName);
+        loginPage.shouldBeErrorNotification(errorMessage, testName);
     }
 
     @Test
@@ -77,7 +66,8 @@ public class LoginTest {
 
         for (int i = 0; i < 3; i++) {
             loginPage.passwordInput(DataHelper.fakePassword(registeredUser));
-            loginPage.invalidLogin(errorMessage, testName);
+            loginPage.nextButtonClick(testName);
+            loginPage.shouldBeErrorNotification(errorMessage, testName);
             loginPage.clearPasswordInput();
         }
         String expectedStatus = "blocked";
@@ -86,6 +76,7 @@ public class LoginTest {
         Assertions.assertEquals(expectedStatus, actualStatus);
 
         loginPage.passwordInput(registeredUser.getPassword());
-        loginPage.invalidLogin(errorBlockingMessage, testName);
+        loginPage.nextButtonClick(testName);
+        loginPage.shouldBeErrorNotification(errorBlockingMessage, testName);
     }
 }
