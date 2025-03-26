@@ -63,6 +63,12 @@ public class LoginTest {
 
         loginPage.loginInput(registeredUser.getLogin());
 
+        String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
+
+        if (actualStatus.equals("blocked")) {
+            SqlHelper.changeUserStatus(registeredUser.getLogin(), actualStatus);
+        }
+
         for (int i = 0; i < 3; i++) {
             loginPage.passwordInput(DataHelper.fakePassword(registeredUser));
             loginPage.nextButtonClick(testName);
@@ -70,7 +76,7 @@ public class LoginTest {
             loginPage.clearPasswordInput();
         }
         String expectedStatus = "blocked";
-        String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
+        actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
 
         Assertions.assertEquals(expectedStatus, actualStatus);
     }
