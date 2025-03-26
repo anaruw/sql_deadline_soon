@@ -67,4 +67,22 @@ public class SqlHelper {
             runner.update(conn, foreignKeySet);
         }
     }
+
+    @SneakyThrows
+    public void changeUserStatus(String login, String status) {
+        String changeStatusQuery =
+                "UPDATE users " +
+                "SET status = ? " +
+                "WHERE login = ?;";
+
+        try (Connection conn = DriverManager.getConnection(connUrl, connUser, connPass)) {
+            QueryRunner runner = new QueryRunner();
+
+            if (status.equals("active")) {
+                runner.update(conn, changeStatusQuery, "blocked", login);
+            } else {
+                runner.update(conn, changeStatusQuery, "active", login);
+            }
+        }
+    }
 }

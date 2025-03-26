@@ -57,7 +57,6 @@ public class LoginTest {
     public void userShouldBeBlockedWithWrongPassword(TestInfo testInfo) {
         String testName = testInfo.getDisplayName();
         String errorMessage = "Ошибка! Неверно указан логин или пароль";
-        String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
 
         LoginPage loginPage = new LoginPage();
         UserInfo registeredUser = DataHelper.getRegisteredUser();
@@ -74,9 +73,26 @@ public class LoginTest {
         String actualStatus = SqlHelper.userStatus(registeredUser.getLogin());
 
         Assertions.assertEquals(expectedStatus, actualStatus);
+    }
 
+    @Test
+    @DisplayName("blocked_user_can_not_login")
+    public void blockedUserCanNotLogin(TestInfo testInfo) {
+        String testName = testInfo.getDisplayName();
+        String errorBlockingMessage = "Ошибка! Пользователь заблокирован";
+
+        LoginPage loginPage = new LoginPage();
+        UserInfo registeredUser = DataHelper.getRegisteredUser();
+
+        String userStatus = SqlHelper.userStatus(registeredUser.getLogin());
+
+        if (userStatus.equals("active")) {
+            SqlHelper.changeUserStatus(registeredUser.getLogin(), userStatus);
+        }
+        loginPage.loginInput(registeredUser.getLogin());
         loginPage.passwordInput(registeredUser.getPassword());
         loginPage.nextButtonClick(testName);
+
         loginPage.shouldBeErrorNotification(errorBlockingMessage, testName);
     }
 }
